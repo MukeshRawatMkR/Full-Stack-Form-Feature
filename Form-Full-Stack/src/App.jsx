@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from "react";
+import axios from "axios";
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [form, setForm] = useState({ name: "", email: "" });
+  const [data, setData] = useState([]);
+
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    await axios.post("http://localhost:5000/api/form", form);
+    setForm({ name: "", email: "" });
+    fetchData();
+  };
+
+  const fetchData = async () => {
+    const res = await axios.get("http://localhost:5000/api/form");
+    setData(res.data);
+  };
+
+  useEffect(() => { fetchData(); }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ padding: "20px" }}>
+      <h1>Form</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          name="name"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+        />
+        <input
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+        />
+        <button type="submit">Submit</button>
+      </form>
 
-export default App
+      <h2>Stored Data</h2>
+      <table border="1" cellPadding="8">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Created At</th></tr>
+        </thead>
+        <tbody>
+          {data.map(row => (
+            <tr key={row.id}>
+              <td>{row.id}</td>
+              <td>{row.name}</td>
+              <td>{row.email}</td>
+              <td>{new Date(row.created_at).toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
