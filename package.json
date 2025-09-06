@@ -4,7 +4,7 @@
   "description": "",
   "license": "ISC",
   "author": "Mukesh Rawat",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "jest"
