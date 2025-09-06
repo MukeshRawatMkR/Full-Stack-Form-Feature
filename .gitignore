@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.DS_Store
+.vscode/
+.idea/
+*.log
+*.tmp
+*.swp
+*.bak
+*.old
+*.class
+*.jar
+*.war
+*.iml
